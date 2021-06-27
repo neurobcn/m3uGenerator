@@ -2,15 +2,35 @@
 {% block content %}
 <h1>m3u List</h1>
 
-<form>
-    <ul>
-        {% for l in list2 %}
-            <li>
-                {{ l.idServer }}- {{ l.nameServer }}- {{ l.ipNameServer }}- {{ l.addressServer }}
-            </li>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">nameServer</th>
+            <th scope="col">ipNameServer</th>
+            <th scope="col">addressServer</th>
+            <th scope="col">contentm3u</th>
+            <th scope="col">Other</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for server in list2 %}
+        <tr>
+            <td scope="row">{{ server.idServer }}</td>
+            <td scope="row">{{ server.nameServer }}</td>
+            <td scope="row">
+                <form action="{% url 'updateM3U' server.idServer %}" method="post">
+                    {% csrf_token %}
+                    <input class="btn btn-md btn-success" value="{{ server.ipNameServer }}" type="submit">
+                </form>
+            </td>
+            <td scope="row">{{ server.addressServer }}</td>
+            <td scope="row">{{ server.contentm3u }}</td>
+            <td scope="row">Other</td>
+        </tr>
         {% endfor %}
-    </ul>
+    </tbody>
+</table>
 
-</form>
 
 {% endblock %}

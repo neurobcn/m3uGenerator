@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Update Page</h1>
+
+<form action="" method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>{{ list1.idServer }}</p>
+    <p>{{ list1.nameServer }}</p>
+    <p>{{ list1.addressServer }}</p>
+    <p>{{ list1.ipNameServer }}</p>
+    <p>{{ url }}</p>
+    <p>
+        {{ m3u }}
+    </p>
+    <input type="submit" value="Upload">
+
+</form>
+
+
+{% endblock %} 
+
+
+
