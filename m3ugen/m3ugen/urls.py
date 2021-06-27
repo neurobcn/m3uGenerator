@@ -16,6 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from pages.views import home_view, uploadM3U, listM3U
+
+from m3uservers import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', home_view, name='home'),
+    path('upload/', uploadM3U, name='uploadM3'),
+    path('list/', listM3U, name='listM3U'),
+
 ]

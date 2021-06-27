@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>m3u List</h1>
+
+<form>
+    <ul>
+        {% for l in list2 %}
+            <li>
+                {{ l.idServer }}- {{ l.nameServer }}- {{ l.ipNameServer }}- {{ l.addressServer }}
+            </li>
+        {% endfor %}
+    </ul>
+
+</form>
+
+{% endblock %}
