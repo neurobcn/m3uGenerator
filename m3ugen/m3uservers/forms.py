@@ -11,4 +11,10 @@ class ImageForm(forms.ModelForm):
 class server1(forms.ModelForm):
     class Meta:
         model = listservers
-        fields = ('nameServer',)
+        fields = '__all__'
+
+
+# class UpdateProfileForm(forms.ModelForm):
+#     class Meta:
+#         model = Profile
+#         fields = ['picture', 'phone', 'description']        

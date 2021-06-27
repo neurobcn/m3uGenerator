@@ -8,12 +8,13 @@
 
     <p>{{ list1.idServer }}</p>
     <p>{{ list1.nameServer }}</p>
-    <p>{{ list1.addressServer }}</p>
-    <p>{{ list1.ipNameServer }}</p>
+    <p>{{ list1.addressServer.label }} : {{ list1.addressServer }}</p>
+    <p>{{ list1.ipNameServer.label }} : {{ list1.ipNameServer }}</p>
+    <p>{{ list1.contentm3u2.label }} m3u2: {{ list1.contentm3u2 }}</p>
+
     <p>{{ url }}</p>
-    <p>
-        {{ m3u }}
-    </p>
+    <p>{{ m3u }}</p>
+
     <input type="submit" value="Upload">
 
 </form>

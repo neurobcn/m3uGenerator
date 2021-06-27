@@ -6,7 +6,7 @@ class listservers(models.Model):
     nameServer = models.CharField(max_length=1024)
     ipNameServer = models.CharField(max_length=255)
     addressServer = models.CharField(max_length=1024)
-    contentm3u = models.TextField(null=True, blank=True)
+    contentm3u2 = models.CharField(max_length=50000, default='')
 
 
 class Images(models.Model):
