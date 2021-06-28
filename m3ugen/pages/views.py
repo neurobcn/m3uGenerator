@@ -1,6 +1,6 @@
 import  requests
 from m3uservers.forms import server1
-from m3uservers.models import listservers
+from m3uservers.models import listservers, canal
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 
@@ -24,22 +24,77 @@ def updateM3U(request, id):
     except Exception as ex:
         r = str(ex)
 
-    
-    if request.method == 'POST':
-        form = server1(request.POST, instance=server)
-        server.contentm3u2 = r
-        print('***************************************')
-        print(form)
-        print('***************************************')
 
-        if form.is_valid():
-            form.save()
-            return redirect('home')    
+    try:
+        obj = canal.objects.get(nameCanal='John', urlCanal='Lennon')
+    except canal.DoesNotExist:
+        obj = canal(nameCanal='John', urlCanal='Lennon', nameGroup='other', idm3u=999, idCanal = 1)
+        obj.save()
+
+    r1=r.split('#EXTINF:')
+    i=0
+    LL=[]
+
+    for str1 in r1:
+
+        print(str(i) +':' + str1)
+        str2=str1.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
+        t = str2[str2.rfind(','):]
+        if 'http://'  in t:
+            s1='http://'
+        if 'https://' in t:
+            s1='https://'
+        if 'rtmp://'  in t:
+            s1='rtmp://'
+        if 'udp://'   in t: 
+            s1='udp://'
+        try:
+            url=t[t.find(s1):]
+            print('url:' + url)
+            grp=''
+            if 'GRP:' in str2:
+                grp = str2[str2.find('GRP:')+4:str2.find(s1)].strip()
+                s1=', GRP:'
+            print('grp:'+ grp)
+            print('s1:' + s1)
+            tmp = str2[:str2.rfind(s1)]
+            print('tmp:' + tmp)
+            title=tmp[tmp.rfind(',')+1:].strip()
+            print('title:'+ title)
+            logo = ''
+            LL.append({'url':url, 'img':logo, 'title':title, 'group': grp })
+
+            try: # 
+                can = canal.objects.get(nameCanal=title, urlCanal=url)
+            except canal.DoesNotExist: #if nameCanal does not exist? create it
+                can = canal(nameCanal=title, urlCanal=url, nameGroup=grp, idm3u=id, idCanal = i)
+                can.save()
+        except:
+            pass
+        
+
+        i += 1
+    
+    print('LL:******************************')
+    print(LL)
+    #r1 = r.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
+        
+    # if request.method == 'POST':
+    #     form = server1(request.POST, instance=server)
+    #     server.contentm3u2 = r
+    #     print('***************************************')
+    #     print(form)
+    #     print('***************************************')
+
+    #     if form.is_valid():
+    #         form.save()
+    #         return redirect('home')    
 
     context = {
         'list1': server,
         'url': url,
         'm3u': r,
+        'r1': r1,
     }
     return render(request, 'update.html', context)
 

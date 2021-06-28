@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.base import Model
 
 # Create your models here.
 class listservers(models.Model):
@@ -14,4 +15,11 @@ class Images(models.Model):
     def delete(self, *args, **kwargs):
         self.image.delete()
         super().delete(*args, **kwargs)
+
+class canal(models.Model):
+    idm3u = models.DecimalField(max_digits=3, decimal_places=0)
+    idCanal = models.DecimalField(max_digits=10, decimal_places=0)
+    nameCanal = models.CharField(max_length=1024)
+    nameGroup = models.CharField(max_length=1024)
+    urlCanal = models.CharField(max_length=1024)
 
