@@ -78,10 +78,21 @@ WSGI_APPLICATION = 'm3ugen.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dec73gj5i64nj7',
+        'USER': 'lchgdonrxjewfq',
+        'PASSWORD': '565bcdf4371caa18fb9430cb8e94ce7b9038dbbe6b4c4c7c22851715721df883',
+        'HOST': 'ec2-176-34-105-15.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
     }
 }
 

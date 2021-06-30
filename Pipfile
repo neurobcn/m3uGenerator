@@ -8,6 +8,7 @@ django = "*"
 pillow = "*"
 requests = "*"
 whitenoise = "*"
+psycopg2-binary = "*"
 
 [dev-packages]
 
