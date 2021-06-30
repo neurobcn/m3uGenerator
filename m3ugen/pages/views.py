@@ -1,29 +1,39 @@
 import  requests
-from m3uservers.forms import server1
+from m3uservers.forms import newServerForm
 from m3uservers.models import listservers, canal
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 
 # Create your views here.
 def home_view(request):
-    return render(request, 'home.html') # HttpResponse("<h1>Hello World</h1>") # string of HTML code
+    return render(request, 'home.html')
 
 def uploadM3U(request):
+    if request.method == 'POST':
+        form = newServerForm(request.POST)
+        if form.is_valid():
+            maxId = listservers.objects.latest('idServer').idServer
+            post = form.save(commit=False)
+            post.idServer = maxId + 1
+            post.save()
+            return redirect('listM3U')
+    else:
+        form = newServerForm()
     context = {
-        'list1': server1(),
+        'list1': newServerForm(),
     }
-    return render(request, 'upload.html', context)
+
+    return render(request, 'upload.html', {'form': form})
 
 def updateM3U(request, id):
-    server = listservers.objects.get(id=id)
-    form = server1(instance=server)
-    url = server.ipNameServer
+    server = listservers.objects.get(idServer=id)
+    #form = server1(instance=server)
+    url = server.urlServer
     try:
         r = requests.get(url)
         r = r.text
     except Exception as ex:
         r = str(ex)
-
 
     try:
         obj = canal.objects.get(nameCanal='John', urlCanal='Lennon')
@@ -77,6 +87,8 @@ def updateM3U(request, id):
     
     print('LL:******************************')
     print(LL)
+    print('server**************')
+    print(server)
     #r1 = r.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
         
     # if request.method == 'POST':
@@ -90,18 +102,20 @@ def updateM3U(request, id):
     #         form.save()
     #         return redirect('home')    
 
+    cannals = canal.objects.filter(idm3u=id)
     context = {
         'list1': server,
         'url': url,
-        'm3u': r,
-        'r1': r1,
+        #'m3u': r,
+        #'r1': r1, 
+        'list2': cannals,
     }
     return render(request, 'update.html', context)
 
 
 def listM3U(request):
     servers = listservers.objects.all()
-    url = servers[1].ipNameServer
+    #url = servers[1].ipNameServer
     
     #print ('url:' + url)
     #r = requests.get(url)

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% block content %}
 <h1>
     Hello uuuuuu
 </h1>
@@ -8,3 +9,5 @@
 <tr><th><label for="id_ipNameServer">IpNameServer:</label></th><td><ul class="errorlist"><li>This field is required.</li></ul><input type="text" name="ipNameServer" maxlength="255" required id="id_ipNameServer"></td></tr>
 <tr><th><label for="id_addressServer">AddressServer:</label></th><td><ul class="errorlist"><li>This field is required.</li></ul><input type="text" name="addressServer" maxlength="1024" required id="id_addressServer"></td></tr>
 <tr><th><label for="id_contentm3u2">Contentm3u2:</label></th><td><ul class="errorlist"><li>This field is required.</li></ul><input type="text" name="contentm3u2" maxlength="50000" required id="id_contentm3u2"></td></tr>
+
+{% endblock %}

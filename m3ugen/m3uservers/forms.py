@@ -8,10 +8,10 @@ class ImageForm(forms.ModelForm):
         model = Images
         fields = ('image',)
 
-class server1(forms.ModelForm):
+class newServerForm(forms.ModelForm):
     class Meta:
         model = listservers
-        fields = '__all__'
+        fields = ('urlServer', 'nameServer')
 
 
 # class UpdateProfileForm(forms.ModelForm):
