@@ -9,6 +9,7 @@ pillow = "*"
 requests = "*"
 whitenoise = "*"
 psycopg2-binary = "*"
+gunicorn = "*"
 
 [dev-packages]
 
