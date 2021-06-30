@@ -29,9 +29,9 @@ SECRET_KEY = 'django-insecure-gkp7q(qtgo3^9k(+)+h#z_)rzh5y57$t#o^ttp1y!td-$xg&jv
 
 # ALLOWED_HOSTS = []
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = [
-  '127.0.0.1:8000',
+  '127.0.0.1',
   'm3ugenerator.herokuapp.com',
 ]
 
@@ -147,7 +147,7 @@ STATIC_URL = '/static/'
 #STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 #STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR.joinpath('static/'),]
-STATIC_ROOT = BASE_DIR.joinpath('staticfiles')
+STATIC_ROOT = BASE_DIR.joinpath('staticfiles/')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 
