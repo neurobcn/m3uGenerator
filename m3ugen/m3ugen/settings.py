@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-gkp7q(qtgo3^9k(+)+h#z_)rzh5y57$t#o^ttp1y!td-$xg&jv
 
 # ALLOWED_HOSTS = []
 
-DEBUG = True
+DEBUG = False
 ALLOWED_HOSTS = [
   '127.0.0.1',
   'm3ugenerator.herokuapp.com',
