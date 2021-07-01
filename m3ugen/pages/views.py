@@ -4,42 +4,56 @@ from m3uservers.models import listservers, canal
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 
+def downloadm3u(url):
+    try:
+        m3u = requests.get(url)
+        m3u = m3u.text
+    except Exception as ex:
+        m3u = 'Invalid URL:' + str(ex)
+    return m3u
+
+
 # Create your views here.
 def home_view(request):
     return render(request, 'home.html')
 
 def uploadM3U(request):
-    if request.method == 'POST':
-        form = newServerForm(request.POST)
-        if form.is_valid():
-            maxId = listservers.objects.latest('idServer').idServer
-            post = form.save(commit=False)
-            post.idServer = maxId + 1
-            post.save()
-            return redirect('listM3U')
+    if request.method == 'POST': # Если обновляем
+        form = newServerForm(request.POST) # Заполняем форму
+        if form.is_valid(): # Если поля заполнены
+            maxId = listservers.objects.latest('idServer').idServer # получаем последний добавленый idServer
+            post = form.save(commit=False) # Сохранеям форму без записи в БД
+            post.idServer = maxId + 1 # Новый idServer
+            url = post.urlServer # из формы вытягиваем URL
+            m3u = downloadm3u(url) # и скачиваем по ссылке
+            if 'Invalid URL' in m3u: # Если ошибка 
+                context = { # подготавливаем форму для нового ввода
+                    'form': form,
+                    'error': m3u # Сообщение об ошибке
+                }
+                return render(request, 'upload.html', context)
+            post.contentm3u2 = m3u  # Если ошибок нет, 
+            post.save()             # сохраняем полученное в базу
+            return redirect('listM3U') # и переходим на список источников
     else:
-        form = newServerForm()
-    context = {
-        'list1': newServerForm(),
-    }
+        form = newServerForm() # если только открыли пустая форма
+        context = { 
+            'form': form,
+        }
+    return render(request, 'upload.html', context)
 
-    return render(request, 'upload.html', {'form': form})
+def deleteM3U(request, id):
+    m3u = listservers.objects.get(idServer=id)
+    m3u.delete()
+    return redirect('listM3U')
+
 
 def updateM3U(request, id):
     server = listservers.objects.get(idServer=id)
     #form = server1(instance=server)
     url = server.urlServer
-    try:
-        r = requests.get(url)
-        r = r.text
-    except Exception as ex:
-        r = str(ex)
-
-    try:
-        obj = canal.objects.get(nameCanal='John', urlCanal='Lennon')
-    except canal.DoesNotExist:
-        obj = canal(nameCanal='John', urlCanal='Lennon', nameGroup='other', idm3u=999, idCanal = 1)
-        obj.save()
+    r = server.contentm3u2
+    #r=downloadm3u(url)
 
     r1=r.split('#EXTINF:')
     i=0
@@ -49,7 +63,10 @@ def updateM3U(request, id):
 
         print(str(i) +':' + str1)
         str2=str1.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
-        t = str2[str2.rfind(','):]
+        t = str2[str2.find(','):]
+        print('str2:'+str2)
+        print('t:'+t)
+        s1=''
         if 'http://'  in t:
             s1='http://'
         if 'https://' in t:
@@ -58,6 +75,7 @@ def updateM3U(request, id):
             s1='rtmp://'
         if 'udp://'   in t: 
             s1='udp://'
+        print('s1_1:'+ s1)
         try:
             url=t[t.find(s1):]
             print('url:' + url)
@@ -128,4 +146,4 @@ def listM3U(request):
     }
 
     return render(request, 'm3uList.html', context)
- 
+

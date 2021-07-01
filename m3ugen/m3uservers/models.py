@@ -8,6 +8,10 @@ class listservers(models.Model):
     urlServer = models.CharField(max_length=1024)
     contentm3u2 = models.CharField(max_length=50000, default='')
 
+    # def delete(self, *args, **kwargs):
+    #     self.image.delete()
+    #     super().delete(*args, **kwargs)
+
 
 class Images(models.Model):
     image = models.ImageField(upload_to='images/')
@@ -21,4 +25,8 @@ class canal(models.Model):
     nameCanal = models.CharField(max_length=1024)
     nameGroup = models.CharField(max_length=1024)
     urlCanal = models.CharField(max_length=1024)
+    checkedForOutput = models.BooleanField(default=True)
+    # def delete(self, *args, **kwargs):
+    #     self.image.delete()
+    #     super().delete(*args, **kwargs)
 

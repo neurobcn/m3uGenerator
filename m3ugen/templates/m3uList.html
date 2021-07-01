@@ -8,8 +8,9 @@
             <th scope="col">Id</th>
             <th scope="col">nameServer</th>
             <th scope="col">urlServer</th>
-            <th scope="col">contentm3u</th>
-            <th scope="col">Other</th>
+            <th scope="col">Delete</th>
+            <th scope="col">CountChecked</th>
+            <th scope="col">CountAll</th>
         </tr>
     </thead>
     <tbody>
@@ -23,7 +24,12 @@
                     <input class="btn btn-md btn-success" value="{{ server.urlServer }}" type="submit">
                 </form>
             </td>
-            <td scope="row">{{ server.contentm3u }}</td>
+            
+            <td scope="row">
+                <!--delete-->
+                <a class="btn btn-md btn-danger" href="{% url 'delete' server.idServer %}">Delete</a>
+            </td>
+            <td scope="row">Other</td>
             <td scope="row">Other</td>
         </tr>
         {% endfor %}
