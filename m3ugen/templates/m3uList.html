@@ -19,7 +19,7 @@
             <td scope="row">{{ server.idServer }}</td>
             <td scope="row">{{ server.nameServer }}</td>
             <td scope="row">
-                <form action="{% url 'updateM3U' server.idServer %}" method="post">
+                <form action="{% url 'updateM3U2' server.idServer %}" method="post">
                     {% csrf_token %}
                     <input class="btn btn-md btn-success" value="{{ server.urlServer }}" type="submit">
                 </form>

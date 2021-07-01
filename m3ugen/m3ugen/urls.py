@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from pages.views import home_view, updateM3U, uploadM3U, listM3U, deleteM3U
+from pages.views import home_view, updateM3U, uploadM3U, listM3U, deleteM3U, updateM3U2
 
 from m3uservers import views
 
@@ -26,6 +26,7 @@ urlpatterns = [
     path('upload/', uploadM3U, name='uploadM3'),
     path('list/', listM3U, name='listM3U'),
     path('update/<str:id>/', updateM3U, name='updateM3U'),
+    path('update2/<str:id>/', updateM3U2, name='updateM3U2'),
     path('delete/<str:id>/', deleteM3U, name = 'delete'),
 
 ]

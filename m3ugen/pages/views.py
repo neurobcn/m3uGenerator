@@ -1,5 +1,5 @@
 import  requests
-from m3uservers.forms import newServerForm
+from m3uservers.forms import newServerForm, listServerForm, listCanalForm
 from m3uservers.models import listservers, canal
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
@@ -100,6 +100,28 @@ def updateM3Udb(request, id):
             pass
         i += 1
 
+def updateM3U2(request, id):
+
+    form = listCanalForm(request.POST)
+    if request.method == 'POST': # Если обновляем
+        form = listCanalForm(request.POST) # Заполняем форму
+        print('form:', form)
+        if form.is_valid():
+            #sss = form.cleaned_data('')
+            print('form:', form)
+    cannals = canal.objects.filter(idm3u=id).order_by('idCanal')
+    countAll = canal.objects.filter(idm3u=id).count()
+    countChecked = canal.objects.filter(idm3u=id, checkedForOutput = True).count()
+    serv1 = listservers.objects.filter(idServer=id)
+    context = {
+        'list1': serv1,
+        'countChecked': countChecked,
+        'countAll': countAll, 
+        'list2': cannals,
+        'form':form,
+    }
+    return render(request, 'update2.html', context)
+
 
 def updateM3U(request, id):
     # server = listservers.objects.get(idServer=id)
@@ -172,6 +194,7 @@ def updateM3U(request, id):
     #     if form.is_valid():
     #         form.save()
     #         return redirect('home')    
+    
 
     cannals = canal.objects.filter(idm3u=id).order_by('idCanal')
     countAll = canal.objects.filter(idm3u=id).count()
@@ -188,16 +211,9 @@ def updateM3U(request, id):
 
 def listM3U(request):
     servers = listservers.objects.all()
-    #url = servers[1].ipNameServer
     
-    #print ('url:' + url)
-    #r = requests.get(url)
-    #servers[0].contentm3u = r.text
-    #print(r.text)
-
     context = {
         'list2': servers,
-        #'m3u': r.text,
     }
 
     return render(request, 'm3uList.html', context)
