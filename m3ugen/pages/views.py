@@ -1,8 +1,10 @@
+from m3ugen.settings import STATIC_URL
 import  requests
 from m3uservers.forms import newServerForm, listServerForm, listCanalForm
 from m3uservers.models import listservers, canal
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
+from django.conf import settings
 
 def downloadm3u(url):
     try:
@@ -15,7 +17,13 @@ def downloadm3u(url):
 
 # Create your views here.
 def home_view(request):
-    return render(request, 'home.html')
+    generateM3U()
+    url = "my.m3u"
+    context = {
+        'url':url,
+        'STATIC_URL':STATIC_URL,
+    }
+    return render(request, 'home.html', context)
 
 def uploadM3U(request):
     if request.method == 'POST': # Если обновляем
@@ -106,77 +114,6 @@ def updateM3U2(request, id):
 
 
 def updateM3U(request, id):
-    # server = listservers.objects.get(idServer=id)
-    # #form = server1(instance=server)
-    # url = server.urlServer
-    # r = server.contentm3u2
-    # #r=downloadm3u(url)
-
-    # r1=r.split('#EXTINF:')
-    # i=0
-    # LL=[]
-
-    # for str1 in r1:
-
-    #     #print(str(i) +':' + str1)
-    #     str2=str1.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
-    #     t = str2[str2.find(','):]
-    #     #print('str2:'+str2)
-    #     #print('t:'+t)
-    #     s1=''
-    #     if 'http://'  in t:
-    #         s1='http://'
-    #     if 'https://' in t:
-    #         s1='https://'
-    #     if 'rtmp://'  in t:
-    #         s1='rtmp://'
-    #     if 'udp://'   in t: 
-    #         s1='udp://'
-    #     #print('s1_1:'+ s1)
-    #     try:
-    #         url=t[t.find(s1):]
-    #         #print('url:' + url)
-    #         grp=''
-    #         if 'GRP:' in str2:
-    #             grp = str2[str2.find('GRP:')+4:str2.find(s1)].strip()
-    #             s1=', GRP:'
-    #         #print('grp:'+ grp)
-    #         #print('s1:' + s1)
-    #         tmp = str2[:str2.rfind(s1)]
-    #         #print('tmp:' + tmp)
-    #         title=tmp[tmp.rfind(',')+1:].strip()
-    #         #print('title:'+ title)
-    #         logo = ''
-    #         #LL.append({'url':url, 'img':logo, 'title':title, 'group': grp })
-
-    #         try: # 
-    #             can = canal.objects.get(nameCanal=title, urlCanal=url, idm3u=id)
-    #         except canal.DoesNotExist: # если канала нет в базе, добавляем
-    #             can = canal(nameCanal=title, urlCanal=url, nameGroup=grp, idm3u=id, idCanal = i)
-    #             can.save()
-    #     except:
-    #         pass
-        
-
-    #     i += 1
-    
-    #print('LL:******************************')
-    #print(LL)
-    #print('server**************')
-    #print(server)
-    #r1 = r.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
-        
-    # if request.method == 'POST':
-    #     form = server1(request.POST, instance=server)
-    #     server.contentm3u2 = r
-    #     print('***************************************')
-    #     print(form)
-    #     print('***************************************')
-
-    #     if form.is_valid():
-    #         form.save()
-    #         return redirect('home')    
-    
 
     cannals = canal.objects.filter(idm3u=id).order_by('idCanal')
     countAll = canal.objects.filter(idm3u=id).count()
@@ -199,4 +136,21 @@ def listM3U(request):
     }
 
     return render(request, 'm3uList.html', context)
+
+def generateM3U():
+    canals = canal.objects.filter(checkedForOutput = True).order_by('idm3u', 'idCanal')
+    listOut=[]
+    # первая строка - заголовок с сылкой на EPG
+    listOut.append('#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip"')
+    for can in canals:
+        listOut.append('#EXTINF:-1,'+ can.nameCanal)
+        if can.nameGroup:
+            listOut.append('#EXTGRP:' + can.nameGroup)
+        listOut.append(can.urlCanal)
+    print(listOut)
+    outputstring='\n'.join(listOut) # итоговый список выводим через "," 
+    fileName = "./static/my.m3u"
+    with open(fileName, 'w', encoding='utf-8') as f:
+        f.write(outputstring)
+
 
