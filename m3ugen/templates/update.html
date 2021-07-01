@@ -3,36 +3,53 @@
 {% block content %}
 <h1>Update Page</h1>
 
-
-<p>{{ list1.idServer }}</p>
-<p>{{ list1.nameServer }}</p>
-<p>{{ list1.urlServer.Label }} : {{ list1.urlServer }}</p>
-<p>{{ list1.contentm3u2.label }} m3u2: {{ list1.contentm3u2 }}</p>
-
-<p>{{ url }}</p>
-<p>{{ m3u }}</p>
-<p>{{ r1 }}</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">nameServer</th>
+            <th scope="col">urlServer</th>
+            <th scope="col">CountChecked</th>
+            <th scope="col">CountAll</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for server in list1 %}
+        <tr>
+            <td scope="row">{{ server.idServer }}</td>
+            <td scope="row">{{ server.nameServer }}</td>
+            <td scope="row">{{ server.urlServer }}</td>
+            <td scope="row">{{ countChecked }}</td>
+            <td scope="row">{{ countAll }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
 
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Idm3u</th>
             <th scope="col">IdCanal</th>
+            <th scope="col">Output</th>
             <th scope="col">NameCanal</th>
             <th scope="col">NameGroup</th>
             <th scope="col">UrlCanal</th>
-            <th scope="col">Other</th>
         </tr>
     </thead>
     <tbody>
         {% for can in list2 %}
         <tr>
-            <td scope="row">{{ can.idm3u }}</td>
             <td scope="row">{{ can.idCanal }}</td>
+            <td scope="row">
+                {% if can.checkedForOutput %}
+                    <input type="checkbox" name="cbcheckedForOutput" id="cbcheckedForOutput_" checked>
+                {% else %}
+                    <input type="checkbox" name="cbcheckedForOutput" id="cbcheckedForOutput_">
+                {% endif %}
+            </td>
             <td scope="row">{{ can.nameCanal }}</td>
             <td scope="row">{{ can.nameGroup }}</td>
             <td scope="row">{{ can.urlCanal }}</td>
-            <td scope="row">other {{ forloop.counter }}</td>
         </tr>
         {% endfor %}
     </tbody>

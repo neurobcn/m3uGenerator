@@ -42,13 +42,12 @@ def uploadM3U(request):
         }
     return render(request, 'upload.html', context)
 
-def deleteM3U(request, id):
-    m3u = listservers.objects.get(idServer=id)
+def deleteM3U(request, id): # Удаляем сервер из списка
+    m3u = listservers.objects.get(idServer=id) 
     m3u.delete()
     return redirect('listM3U')
 
-
-def updateM3U(request, id):
+def updateM3Udb(request, id):
     server = listservers.objects.get(idServer=id)
     #form = server1(instance=server)
     url = server.urlServer
@@ -61,11 +60,11 @@ def updateM3U(request, id):
 
     for str1 in r1:
 
-        print(str(i) +':' + str1)
+        #print(str(i) +':' + str1)
         str2=str1.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
         t = str2[str2.find(','):]
-        print('str2:'+str2)
-        print('t:'+t)
+        #print('str2:'+str2)
+        #print('t:'+t)
         s1=''
         if 'http://'  in t:
             s1='http://'
@@ -75,38 +74,92 @@ def updateM3U(request, id):
             s1='rtmp://'
         if 'udp://'   in t: 
             s1='udp://'
-        print('s1_1:'+ s1)
+        #print('s1_1:'+ s1)
         try:
             url=t[t.find(s1):]
-            print('url:' + url)
+            #print('url:' + url)
             grp=''
             if 'GRP:' in str2:
                 grp = str2[str2.find('GRP:')+4:str2.find(s1)].strip()
                 s1=', GRP:'
-            print('grp:'+ grp)
-            print('s1:' + s1)
+            #print('grp:'+ grp)
+            #print('s1:' + s1)
             tmp = str2[:str2.rfind(s1)]
-            print('tmp:' + tmp)
+            #print('tmp:' + tmp)
             title=tmp[tmp.rfind(',')+1:].strip()
-            print('title:'+ title)
+            #print('title:'+ title)
             logo = ''
-            LL.append({'url':url, 'img':logo, 'title':title, 'group': grp })
+            #LL.append({'url':url, 'img':logo, 'title':title, 'group': grp })
 
             try: # 
-                can = canal.objects.get(nameCanal=title, urlCanal=url)
-            except canal.DoesNotExist: #if nameCanal does not exist? create it
+                can = canal.objects.get(nameCanal=title, urlCanal=url, idm3u=id)
+            except canal.DoesNotExist: # если канала нет в базе, добавляем
                 can = canal(nameCanal=title, urlCanal=url, nameGroup=grp, idm3u=id, idCanal = i)
                 can.save()
         except:
             pass
+        i += 1
+
+
+def updateM3U(request, id):
+    # server = listservers.objects.get(idServer=id)
+    # #form = server1(instance=server)
+    # url = server.urlServer
+    # r = server.contentm3u2
+    # #r=downloadm3u(url)
+
+    # r1=r.split('#EXTINF:')
+    # i=0
+    # LL=[]
+
+    # for str1 in r1:
+
+    #     #print(str(i) +':' + str1)
+    #     str2=str1.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
+    #     t = str2[str2.find(','):]
+    #     #print('str2:'+str2)
+    #     #print('t:'+t)
+    #     s1=''
+    #     if 'http://'  in t:
+    #         s1='http://'
+    #     if 'https://' in t:
+    #         s1='https://'
+    #     if 'rtmp://'  in t:
+    #         s1='rtmp://'
+    #     if 'udp://'   in t: 
+    #         s1='udp://'
+    #     #print('s1_1:'+ s1)
+    #     try:
+    #         url=t[t.find(s1):]
+    #         #print('url:' + url)
+    #         grp=''
+    #         if 'GRP:' in str2:
+    #             grp = str2[str2.find('GRP:')+4:str2.find(s1)].strip()
+    #             s1=', GRP:'
+    #         #print('grp:'+ grp)
+    #         #print('s1:' + s1)
+    #         tmp = str2[:str2.rfind(s1)]
+    #         #print('tmp:' + tmp)
+    #         title=tmp[tmp.rfind(',')+1:].strip()
+    #         #print('title:'+ title)
+    #         logo = ''
+    #         #LL.append({'url':url, 'img':logo, 'title':title, 'group': grp })
+
+    #         try: # 
+    #             can = canal.objects.get(nameCanal=title, urlCanal=url, idm3u=id)
+    #         except canal.DoesNotExist: # если канала нет в базе, добавляем
+    #             can = canal(nameCanal=title, urlCanal=url, nameGroup=grp, idm3u=id, idCanal = i)
+    #             can.save()
+    #     except:
+    #         pass
         
 
-        i += 1
+    #     i += 1
     
-    print('LL:******************************')
-    print(LL)
-    print('server**************')
-    print(server)
+    #print('LL:******************************')
+    #print(LL)
+    #print('server**************')
+    #print(server)
     #r1 = r.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
         
     # if request.method == 'POST':
@@ -120,12 +173,14 @@ def updateM3U(request, id):
     #         form.save()
     #         return redirect('home')    
 
-    cannals = canal.objects.filter(idm3u=id)
+    cannals = canal.objects.filter(idm3u=id).order_by('idCanal')
+    countAll = canal.objects.filter(idm3u=id).count()
+    countChecked = canal.objects.filter(idm3u=id, checkedForOutput = True).count()
+    serv1 = listservers.objects.filter(idServer=id)
     context = {
-        'list1': server,
-        'url': url,
-        #'m3u': r,
-        #'r1': r1, 
+        'list1': serv1,
+        'countChecked': countChecked,
+        'countAll': countAll, 
         'list2': cannals,
     }
     return render(request, 'update.html', context)
