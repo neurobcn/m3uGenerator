@@ -11,6 +11,7 @@
             <th scope="col">urlServer</th>
             <th scope="col">CountChecked</th>
             <th scope="col">CountAll</th>
+            <th scope="col">ReloadList</th>
         </tr>
     </thead>
     <tbody>
@@ -21,6 +22,9 @@
             <td scope="row">{{ server.urlServer }}</td>
             <td scope="row">{{ countChecked }}</td>
             <td scope="row">{{ countAll }}</td>
+            <td scope="row">
+                <a class="btn btn-md btn-warning" href="{% url 'reloadList' server.idServer %}">Reload</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

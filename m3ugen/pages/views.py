@@ -47,58 +47,40 @@ def deleteM3U(request, id): # Удаляем сервер из списка
     m3u.delete()
     return redirect('listM3U')
 
-def updateM3Udb(request, id):
-    server = listservers.objects.get(idServer=id)
-    #form = server1(instance=server)
-    url = server.urlServer
-    r = server.contentm3u2
-    #r=downloadm3u(url)
+def reloadList(request, id):
+    pass
 
-    r1=r.split('#EXTINF:')
-    i=0
-    LL=[]
+def updateM3Udb(request, id): # Обновление списка каналов из сохраненного в базе contentm3u2
+    server = listservers.objects.get(idServer=id) # Выбираем сервер
+    content = server.contentm3u2 # Вытягиваем сохраненный content
 
-    for str1 in r1:
+    canals = content.split('#EXTINF:') # разбиваем на каналы - разделитель EXTINF
+    i=1
+    canals.pop(0) # вырезаем первую строку
+    for can in canals: # Пробегаем по списку
+        items = can.splitlines() # разбиваем на элементы
+        print('stttt:', items)
+        
+        title = items[0][items[0].find(',')+1:].strip() # Заголовок
+        grp = ''
+        url = ''
 
-        #print(str(i) +':' + str1)
-        str2=str1.replace(chr(10),"").replace(chr(13),"").replace("#EXTINF:", "\n#EXTINF:").replace("#EXTGRP:", ", GRP:")
-        t = str2[str2.find(','):]
-        #print('str2:'+str2)
-        #print('t:'+t)
-        s1=''
-        if 'http://'  in t:
-            s1='http://'
-        if 'https://' in t:
-            s1='https://'
-        if 'rtmp://'  in t:
-            s1='rtmp://'
-        if 'udp://'   in t: 
-            s1='udp://'
-        #print('s1_1:'+ s1)
-        try:
-            url=t[t.find(s1):]
-            #print('url:' + url)
-            grp=''
-            if 'GRP:' in str2:
-                grp = str2[str2.find('GRP:')+4:str2.find(s1)].strip()
-                s1=', GRP:'
-            #print('grp:'+ grp)
-            #print('s1:' + s1)
-            tmp = str2[:str2.rfind(s1)]
-            #print('tmp:' + tmp)
-            title=tmp[tmp.rfind(',')+1:].strip()
-            #print('title:'+ title)
-            logo = ''
-            #LL.append({'url':url, 'img':logo, 'title':title, 'group': grp })
+        if '#EXTGRP:' in items[1]: # во второй строке может быть Группа
+            grp=items[1].replace('#EXTGRP:','') # если так, то сохраняем
+            url = items[2] # далее ссылка на поток
+        else:
+            url = items[1] # ссылка на поток
 
-            try: # 
-                can = canal.objects.get(nameCanal=title, urlCanal=url, idm3u=id)
-            except canal.DoesNotExist: # если канала нет в базе, добавляем
-                can = canal(nameCanal=title, urlCanal=url, nameGroup=grp, idm3u=id, idCanal = i)
-                can.save()
-        except:
-            pass
+        # print('title:' + title + '|grp:' + grp + '|url:' + url)
+
+        try: # Проверяем есть ли такой канал в базе
+            can = canal.objects.get(nameCanal=title, urlCanal=url, idm3u=id)
+        except canal.DoesNotExist: # если канала нет в базе, добавляем
+            can = canal(nameCanal=title, urlCanal=url, nameGroup=grp, idm3u=id, idCanal = i)
+            can.save()
         i += 1
+    return redirect('listM3U')
+
 
 def updateM3U2(request, id):
 
