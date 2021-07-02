@@ -16,8 +16,6 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-#from pages.views import *
-
 from m3uservers.views import *
 
 urlpatterns = [
@@ -29,7 +27,4 @@ urlpatterns = [
     path('update2/<str:id>/', updateM3U2, name='updateM3U2'),
     path('delete/<str:id>/', deleteM3U, name = 'delete'),
     path('reload/<str:id>/', updateM3Udb, name = 'reloadList'),
-
-    #path('update/$', canalList.as_view(), name="canal-list"),
-
 ]

@@ -3,6 +3,10 @@
 <h1>
     Сгенерированный плейлист
 </h1>
-
+{% if error %}
+<a>{{ error }}</a> 
+{% else %}
 <a class="btn btn-md btn-info" href="{{ STATIC_URL }}{{ url }}">Скачать плейлист</a>
+{% endif %}
+
 {% endblock %}

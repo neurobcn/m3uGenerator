@@ -9,23 +9,25 @@ from django.http import HttpResponse
 from django.conf import settings
 
 
-def downloadm3u(url):
+def downloadm3u(url): # Загрузка m3u 
     try:
-        m3u = requests.get(url)
-        m3u = m3u.text
-    except Exception as ex:
-        m3u = 'Invalid URL:' + str(ex)
+        m3u = requests.get(url) # Пробуем загрузить
+        m3u = m3u.text # если все норм сохраняем как текст
+    except Exception as ex: # если не получилось
+        m3u = 'Invalid URL:' + str(ex) # Сообщаем об ошибке
     return m3u
 
-
-# Create your views here.
 def home_view(request):
-    generateM3U()
-    url = "my.m3u"
-    context = {
-        'url':url,
-        'STATIC_URL':STATIC_URL,
-    }
+    url = generateM3U() # Генерируем выходной файл
+    if 'Ошибка' in url: # Если ошибка 
+        context = {
+            'error': 'Ошибка:'+ url # Сообщение об ошибке
+        }    
+    else:
+        context = { # если нет ошибок показываем кнопку с ссылкой
+            'url':url,
+            'STATIC_URL':STATIC_URL,
+        }
     return render(request, 'home.html', context)
 
 def uploadM3U(request):
@@ -93,8 +95,8 @@ def updateM3Udb(request, id): # Обновление списка каналов
     return redirect('updateM3U2', id)
 
 
-def updateM3U2(request, id):
-
+def updateM3U2(request, id): # Управление каналами
+    # 
     form = listCanalForm(request.POST)
     if request.method == 'POST': # Если обновляем
         form = listCanalForm(request.POST) # Заполняем форму
@@ -102,20 +104,20 @@ def updateM3U2(request, id):
         if form.is_valid():
             #sss = form.cleaned_data('')
             print('form:', form)
+    #
 
-    canalList = canal.objects.filter(idm3u=id).order_by('idCanal')
-    countAll = canal.objects.filter(idm3u=id).count()
-    countChecked = canal.objects.filter(idm3u=id, checkedForOutput = True).count()
-    serverList = listservers.objects.filter(idServer=id)
+    canalList = canal.objects.filter(idm3u=id).order_by('idCanal') # список каналов
+    countAll = canal.objects.filter(idm3u=id).count() # Количество каналов в списке
+    countChecked = canal.objects.filter(idm3u=id, checkedForOutput = True).count() # количество отмеченных каналов
+    serverList = listservers.objects.filter(idServer=id) # текущий сервер
     context = {
         'serverList': serverList,
         'countChecked': countChecked,
         'countAll': countAll, 
         'canalList': canalList,
-        'form':form,
+        #'form': form,
     }
     return render(request, 'update2.html', context)
-
 
 def updateM3U(request, id):
 
@@ -139,24 +141,31 @@ def listM3U(request): # Список исходных плейлистов
     #form = listServerForm()
     context = {
         'serverList': serverList,
-     #   'form': form,
+    #   'form': form,
     }
     return render(request, 'm3uList.html', context)
 
-def generateM3U():
+def generateM3U(): # Генерируем файл M3U
+    # Выбираем все помеченые каналы
     canals = canal.objects.filter(checkedForOutput = True).order_by('idm3u', 'idCanal')
-    listOut=[]
+    listOut=[] # Выходной list
     # первая строка - заголовок с сылкой на EPG
     listOut.append('#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip"')
-    for can in canals:
-        listOut.append('#EXTINF:-1,'+ can.nameCanal)
-        if can.nameGroup:
-            listOut.append('#EXTGRP:' + can.nameGroup)
-        listOut.append(can.urlCanal)
-    print(listOut)
-    outputstring='\n'.join(listOut) # итоговый список выводим через "," 
-    fileName = "./static/my.m3u"
-    with open(fileName, 'w', encoding='utf-8') as f:
-        f.write(outputstring)
+    for can in canals: # Пробегаем по всем каналам
+        listOut.append('#EXTINF:-1,'+ can.nameCanal) # Строка заголовка
+        if can.nameGroup: # если есть название группы
+            listOut.append('#EXTGRP:' + can.nameGroup) # то следущая строка - Группа
+        listOut.append(can.urlCanal) # далее ссылка на канал
+    #print(listOut)
+    outputstring='\n'.join(listOut) # итоговый список выводим через разделитель строк "\n" 
+    fileName = "./static/myList.m3u"
+    try:
+        with open(fileName, 'w', encoding='utf-8') as f: # Запись в файл
+            f.write(outputstring)
+    except BaseException as ex:
+        fileName='Ошибка записи в файл:' + ex
+    return fileName
+
+
 
 

@@ -9,22 +9,10 @@ class listservers(models.Model):
     urlServer = models.CharField(max_length=1024)
     contentm3u2 = models.CharField(max_length=50000, default='')
 
-    # def delete(self, *args, **kwargs):
-    #     self.image.delete()
-    #     super().delete(*args, **kwargs)
-
-
 class canal(models.Model):
     idm3u = models.IntegerField()
     idCanal = models.IntegerField()
     nameCanal = models.CharField(max_length=1024)
     nameGroup = models.CharField(max_length=1024)
     urlCanal = models.CharField(max_length=1024)
-    checkedForOutput = models.BooleanField(default=True)
-    # def delete(self, *args, **kwargs):
-    #     self.image.delete()
-    #     super().delete(*args, **kwargs)
-
-#class canals(canal):
-
-
+    checkedForOutput = models.BooleanField(default=True) # флаг выбора для выходного файла
