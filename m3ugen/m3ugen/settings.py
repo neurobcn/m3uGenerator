@@ -25,11 +25,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-gkp7q(qtgo3^9k(+)+h#z_)rzh5y57$t#o^ttp1y!td-$xg&jv'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-#DEBUG = True
+DEBUG = True
 
 # ALLOWED_HOSTS = []
 
-DEBUG = False
+#DEBUG = False
 ALLOWED_HOSTS = [
   '127.0.0.1',
   'm3ugenerator.herokuapp.com',
@@ -45,8 +45,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    #'listable',
     'm3uservers',
-    'pages'
+    #'pages',
 ]
 
 MIDDLEWARE = [
@@ -84,23 +85,23 @@ WSGI_APPLICATION = 'm3ugen.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dec73gj5i64nj7',
-        'USER': 'lchgdonrxjewfq',
-        'PASSWORD': '565bcdf4371caa18fb9430cb8e94ce7b9038dbbe6b4c4c7c22851715721df883',
-        'HOST': 'ec2-176-34-105-15.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'dec73gj5i64nj7',
+#         'USER': 'lchgdonrxjewfq',
+#         'PASSWORD': '565bcdf4371caa18fb9430cb8e94ce7b9038dbbe6b4c4c7c22851715721df883',
+#         'HOST': 'ec2-176-34-105-15.eu-west-1.compute.amazonaws.com',
+#         'PORT': '5432',
+#     }
+# }
 
 
 # Password validation
@@ -144,8 +145,6 @@ USE_TZ = True
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/files/'
-#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
-#STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR.joinpath('static/'),]
 STATIC_ROOT = BASE_DIR.joinpath('staticfiles/')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'

@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models.base import Model
 
+
 # Create your models here.
 class listservers(models.Model):
     idServer = models.IntegerField()
@@ -13,12 +14,6 @@ class listservers(models.Model):
     #     super().delete(*args, **kwargs)
 
 
-class Images(models.Model):
-    image = models.ImageField(upload_to='images/')
-    def delete(self, *args, **kwargs):
-        self.image.delete()
-        super().delete(*args, **kwargs)
-
 class canal(models.Model):
     idm3u = models.IntegerField()
     idCanal = models.IntegerField()
@@ -29,4 +24,7 @@ class canal(models.Model):
     # def delete(self, *args, **kwargs):
     #     self.image.delete()
     #     super().delete(*args, **kwargs)
+
+#class canals(canal):
+
 

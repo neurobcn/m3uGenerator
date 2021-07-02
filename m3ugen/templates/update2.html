@@ -1,29 +1,27 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Update Page</h1>
+<h3>Управление каналами</h3>
 
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">Id</th>
-            <th scope="col">nameServer</th>
-            <th scope="col">urlServer</th>
-            <th scope="col">CountChecked</th>
-            <th scope="col">CountAll</th>
-            <th scope="col">ReloadList</th>
+            <th scope="col">Name</th>
+            <th scope="col">url</th>
+            <th scope="col">Выбрано каналов</th>
+            <th scope="col">Всего каналов</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
-        {% for server in list1 %}
+        {% for server in serverList %}
         <tr>
-            <td scope="row">{{ server.idServer }}</td>
             <td scope="row">{{ server.nameServer }}</td>
             <td scope="row">{{ server.urlServer }}</td>
             <td scope="row">{{ countChecked }}</td>
             <td scope="row">{{ countAll }}</td>
             <td scope="row">
-                <a class="btn btn-md btn-warning" href="{% url 'reloadList' server.idServer %}">Reload</a>
+                <a class="btn btn-md btn-warning" href="{% url 'reloadList' server.idServer %}">Обновить</a>
             </td>
         </tr>
         {% endfor %}
@@ -33,7 +31,6 @@
 <table class="table">
     <thead>
         <tr>
-            <th scope="col">IdCanal</th>
             <th scope="col">Output</th>
             <th scope="col">NameCanal</th>
             <th scope="col">NameGroup</th>
@@ -41,7 +38,7 @@
         </tr>
     </thead>
     <tbody>
-        {% for can in list2 %}
+        {% for can in canalList %}
         <tr>
             <td scope="row">{{ can.idCanal }}</td>
             <td scope="row">
@@ -60,6 +57,3 @@
 </table>
 
 {% endblock %} 
-
-
-

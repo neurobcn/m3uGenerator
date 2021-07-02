@@ -1,5 +1,5 @@
 #EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip"
-#EXTINF:-1,Первый канал dfgdfgd fgdfsg dfdf df
+#EXTINF:-1,Первый канал
 #EXTGRP:Федеральные
 http://195.49.206.244:90/Pervyi_kanal/index.m3u8
 #EXTINF:-1,Первый канал (Европа)
