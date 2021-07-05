@@ -68,7 +68,7 @@ def deleteM3U(request, id): # Удаляем сервер из списка
 def reloadList(request, id):
     pass
 
-def updateM3Udb(request, id): # Обновление списка каналов из сохраненного в базе contentm3u2
+def updateCanals(request, id): # Обновление списка каналов из сохраненного в базе contentm3u2
     server = listservers.objects.get(idServer=id) # Выбираем сервер
     
     url = server.urlServer # Ссылка на источник
@@ -131,8 +131,8 @@ def updateM3U2(request, id): # Управление каналами
     }
     return render(request, 'update2.html', context)
 
-def updList(request):
-    canalList = canal.objects.filter(idm3u=4)
+def updList(request, id):
+    canalList = canal.objects.filter(idm3u=id)
     canalFormset = modelformset_factory(canal, fields='__all__')
     if request.method == 'POST':
         formset = canalFormset(request.POST, request.FILES)
@@ -145,7 +145,7 @@ def updList(request):
                 print('instance:'+instance)
                 instance.save()
     else:
-        formset = canalFormset(queryset=canal.objects.filter(idm3u=5))
+        formset = canalFormset(queryset=canal.objects.filter(idm3u=id))
     return render(request, 'canal_list.html', {'formset': formset})
 
 def updateM3U(request, id):
@@ -167,15 +167,16 @@ def updateM3U(request, id):
 
     #form2 = editCanalForm(instance=)
 
-    cannals = canal.objects.filter(idm3u=id).order_by('idCanal')
-    countAll = canal.objects.filter(idm3u=id).count()
-    countChecked = canal.objects.filter(idm3u=id, checkedForOutput = True).count()
-    serv1 = listservers.objects.filter(idServer=id)
+    canalList = canal.objects.filter(idm3u=id).order_by('idCanal') # список каналов
+    countAll = canal.objects.filter(idm3u=id).count() # Количество каналов в списке
+    countChecked = canal.objects.filter(idm3u=id, checkedForOutput = True).count() # количество отмеченных каналов
+    serverList = listservers.objects.filter(idServer=id) # текущий сервер
+
     context = {
-        'list1': serv1,
+        'serverList': serverList,
         'countChecked': countChecked,
         'countAll': countAll, 
-        'list2': cannals,
+        'canalList': canalList,
         'form': form,
     }
     return render(request, 'update.html', context)

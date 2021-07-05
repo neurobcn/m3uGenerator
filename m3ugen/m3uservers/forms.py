@@ -19,17 +19,22 @@ class listCanalForm(forms.ModelForm):
     class Meta:
         model = canal
         fields = '__all__'
-        widgets = {
-            'checkedForOutput': widgets.CheckboxInput,
-        }
+        # widgets = {
+        #     'checkedForOutput': widgets.CheckboxInput,
+        # }
 
-class editCanalForm(forms.ModelForm):
-    checkedForOutput = forms.BooleanField(label='', required=False)
+class editCanalForm(forms.Form):
+    idm3u = forms.IntegerField(label='', required=False, disabled=True)
+    idCanal = forms.IntegerField(label='', required=False, disabled=True)
+    nameCanal = forms.CharField(label='', required=False, disabled=True)
     nameGroup = forms.CharField(label='', required=False)
-    class Meta:
-        model = canal
-        exclude = ['idm3u', 'idCanal', 'nameCanal', 'urlCanal']
- 
+    urlCanal = forms.CharField(label='', required=False, disabled=True)
+    checkedForOutput = forms.BooleanField(label='', required=False)
+    widgets = {
+        'checkedForOutput': widgets.CheckboxInput,
+    }
+
+     
 
 # class canals2 (forms.ModelForm):
 #     class Meta:
