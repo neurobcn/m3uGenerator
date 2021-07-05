@@ -2,13 +2,11 @@ from django.db import models
 from django.db.models import fields
 from m3ugen.settings import STATIC_URL
 import  requests
-from m3uservers.forms import newServerForm, listServerForm, listCanalForm, editCanalForm
-from m3uservers.models import listservers, canal
+from m3uservers.forms import NewServerForm, ListServerForm, ListCanalForm, EditCanalForm
+from m3uservers.models import ListServers, Canal
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.conf import settings
-from django.views.generic import ListView
-from .tables import PersonTable
 from django.forms import formset_factory
 from django.forms import modelformset_factory
 
@@ -35,9 +33,9 @@ def home_view(request):
 
 def uploadM3U(request):
     if request.method == 'POST': # Если обновляем
-        form = newServerForm(request.POST) # Заполняем форму
+        form = NewServerForm(request.POST) # Заполняем форму
         if form.is_valid(): # Если поля заполнены
-            maxId = listservers.objects.latest('idServer').idServer # получаем последний добавленый idServer
+            maxId = ListServers.objects.latest('idServer').idServer # получаем последний добавленый idServer
             post = form.save(commit=False) # Сохранеям форму без записи в БД
             post.idServer = maxId + 1 # Новый idServer
             url = post.urlServer # из формы вытягиваем URL
@@ -52,15 +50,15 @@ def uploadM3U(request):
             post.save()             # сохраняем полученное в базу
             return redirect('listM3U') # и переходим на список источников
     else:
-        form = newServerForm() # если только открыли пустая форма
+        form = NewServerForm() # если только открыли пустая форма
         context = { 
             'form': form,
         }
     return render(request, 'upload.html', context)
 
 def deleteM3U(request, id): # Удаляем сервер из списка
-    m3u = listservers.objects.get(idServer=id)
-    canals = canal.objects.filter(idm3u=id)
+    m3u = ListServers.objects.get(idServer=id)
+    canals = Canal.objects.filter(idm3u=id)
     canals.delete()
     m3u.delete()
     return redirect('listM3U')
@@ -68,8 +66,8 @@ def deleteM3U(request, id): # Удаляем сервер из списка
 def reloadList(request, id):
     pass
 
-def updateCanals(request, id): # Обновление списка каналов из сохраненного в базе contentm3u2
-    server = listservers.objects.get(idServer=id) # Выбираем сервер
+def reloadList(request, id): # Обновление списка каналов из сохраненного в базе contentm3u2
+    server = ListServers.objects.get(idServer=id) # Выбираем сервер
     
     url = server.urlServer # Ссылка на источник
     m3u = downloadm3u(url) # скачиваем список каналов из источника
@@ -79,49 +77,52 @@ def updateCanals(request, id): # Обновление списка канало�
 
     content = server.contentm3u2 # Вытягиваем сохраненный content
 
+    deleteList = Canal.objects.filter(idm3u=id) # Подготавливаем и 
+    deleteList.delete()                         # очищаем список каналов в базе
+
     canals = content.split('#EXTINF:') # разбиваем на каналы - разделитель EXTINF
     i=1
     canals.pop(0) # вырезаем первую строку 
     for can in canals: # Пробегаем по списку
-        items = can.splitlines() # разбиваем на элементы
-        #print('stttt:', items)
-        
-        title = items[0][items[0].find(',')+1:].strip() # Заголовок
-        grp = ''
-        url = ''
+        try: # Если в описании канала ошибка, пропускаем (временно - ошибку в консоль)
+            items = can.splitlines() # разбиваем на элементы
 
-        if '#EXTGRP:' in items[1]: # во второй строке может быть Группа
-            grp=items[1].replace('#EXTGRP:','') # если так, то сохраняем
-            url = items[2] # далее ссылка на поток
-        else:
-            url = items[1] # ссылка на поток
+            title = items[0][items[0].rfind(',')+1:] # Заголовок
+            grp = ''
+            url = ''
 
-        # print('title:' + title + '|grp:' + grp + '|url:' + url)
+            if '#EXTGRP:' in items[1]: # во второй строке может быть Группа
+                grp=items[1].replace('#EXTGRP:','').strip() # если так, то сохраняем
+                url = items[2].strip() # далее ссылка на поток
+            else:
+                url = items[1].strip() # ссылка на поток
 
-        try: # Проверяем есть ли такой канал в базе
-            can = canal.objects.get(nameCanal=title, urlCanal=url, idm3u=id)
-        except canal.DoesNotExist: # если канала нет в базе, добавляем
-            can = canal(nameCanal=title, urlCanal=url, nameGroup=grp, idm3u=id, idCanal = i)
-            can.save()
+            try: # Проверяем есть ли такой канал в базе
+                can = Canal.objects.get(nameCanal=title, urlCanal=url, idm3u=id)
+            except Canal.DoesNotExist: # если канала нет в базе, добавляем
+                can = Canal(nameCanal=title, urlCanal=url, nameGroup=grp, idm3u=id, idCanal = i)
+                can.save()
+        except BaseException as ex:
+            print('error:',str(i),':',ex)
         i += 1
-    return redirect('updateM3U2', id)
+    return redirect('updateList', id)
 
 
-def updateM3U2(request, id): # Управление каналами
+def updateList(request, id): # Управление каналами
     # 
-    form = listCanalForm(request.POST)
-    if request.method == 'POST': # Если обновляем
-        form = listCanalForm(request.POST) # Заполняем форму
-        print('form:', form)
-        if form.is_valid():
-            #sss = form.cleaned_data('')
-            print('form:', form)
+    # form = ListCanalForm(request.POST)
+    # if request.method == 'POST': # Если обновляем
+    #     form = ListCanalForm(request.POST) # Заполняем форму
+    #     print('form:', form)
+    #     # if form.is_valid():
+    #     #     #sss = form.cleaned_data('')
+    #     #     print('form:', form)
     #
 
-    canalList = canal.objects.filter(idm3u=id).order_by('idCanal') # список каналов
-    countAll = canal.objects.filter(idm3u=id).count() # Количество каналов в списке
-    countChecked = canal.objects.filter(idm3u=id, checkedForOutput = True).count() # количество отмеченных каналов
-    serverList = listservers.objects.filter(idServer=id) # текущий сервер
+    canalList = Canal.objects.filter(idm3u=id).order_by('idCanal') # список каналов
+    countAll = Canal.objects.filter(idm3u=id).count() # Количество каналов в списке
+    countChecked = Canal.objects.filter(idm3u=id, checkedForOutput = True).count() # количество отмеченных каналов
+    serverList = ListServers.objects.filter(idServer=id) # текущий сервер
     context = {
         'serverList': serverList,
         'countChecked': countChecked,
@@ -129,79 +130,90 @@ def updateM3U2(request, id): # Управление каналами
         'canalList': canalList,
         #'form': form,
     }
-    return render(request, 'update2.html', context)
+    return render(request, 'updateList.html', context)
 
 def updateCanal(request, idm3u, idcanal):
-    can = canal.objects.get(idm3u = idm3u, idCanal = idcanal)
+    can = Canal.objects.get(idm3u = idm3u, idCanal = idcanal)
     if request.method == 'POST':
         check_status = True if request.POST['checked'] == 'true' else False
         can.checkedForOutput = check_status
         can.save()
-        return HttpResponse("Success!")
+        return HttpResponse("")
 
-def updList(request, id):
-    canalList = canal.objects.filter(idm3u=id)
-    canalFormset = modelformset_factory(canal, fields='__all__')
-    if request.method == 'POST':
-        formset = canalFormset(request.POST, request.FILES)
-        print('formset:',formset.as_table)
-        if formset.is_valid():
-            # do something with the formset.cleaned_data
-            instances = formset.save(commit=False)
-            for instance in instances:
-            # do something with instance
-                print('instance:'+instance)
-                instance.save()
-    else:
-        formset = canalFormset(queryset=canal.objects.filter(idm3u=id))
-    return render(request, 'canal_list.html', {'formset': formset})
+# def updList(request, id):
+#     canalList = Canal.objects.filter(idm3u=id)
+#     canalFormset = modelformset_factory(Canal, fields='__all__')
+#     if request.method == 'POST':
+#         formset = canalFormset(request.POST, request.FILES)
+#         print('formset:',formset.as_table)
+#         if formset.is_valid():
+#             # do something with the formset.cleaned_data
+#             instances = formset.save(commit=False)
+#             for instance in instances:
+#             # do something with instance
+#                 print('instance:'+instance)
+#                 instance.save()
+#     else:
+#         formset = canalFormset(queryset = Canal.objects.filter(idm3u=id))
+#     return render(request, 'canal_list.html', {'formset': formset})
 
-def updateM3U(request, id):
+# def updateM3U(request, id):
 
-    #if request.method == 'POST': # Если обновляем
+#     #if request.method == 'POST': # Если обновляем
 
-    newform = editCanalForm(request.POST)
-    #cans = canals2.objects.
-    cannals2 = canal.objects.filter(idm3u=id).order_by('idCanal')
-    form = []
-    for can2 in cannals2:
-        canalform = [can2.idm3u, 
-                     can2.idCanal,
-                     can2.nameCanal,
-                     can2.nameGroup,
-                     can2.urlCanal,
-                     can2.checkedForOutput]
-        form.append (canalform)
+#     newform = EditCanalForm(request.POST)
+#     #cans = canals2.objects.
+#     cannals2 = Canal.objects.filter(idm3u=id).order_by('idCanal')
+#     form = []
+#     for can2 in cannals2:
+#         canalform = [can2.idm3u, 
+#                      can2.idCanal,
+#                      can2.nameCanal,
+#                      can2.nameGroup,
+#                      can2.urlCanal,
+#                      can2.checkedForOutput]
+#         form.append (canalform)
 
-    #form2 = editCanalForm(instance=)
+#     #form2 = editCanalForm(instance=)
 
-    canalList = canal.objects.filter(idm3u=id).order_by('idCanal') # список каналов
-    countAll = canal.objects.filter(idm3u=id).count() # Количество каналов в списке
-    countChecked = canal.objects.filter(idm3u=id, checkedForOutput = True).count() # количество отмеченных каналов
-    serverList = listservers.objects.filter(idServer=id) # текущий сервер
+#     canalList = Canal.objects.filter(idm3u=id).order_by('idCanal') # список каналов
+#     countAll = Canal.objects.filter(idm3u=id).count() # Количество каналов в списке
+#     countChecked = Canal.objects.filter(idm3u=id, checkedForOutput = True).count() # количество отмеченных каналов
+#     serverList = ListServers.objects.filter(idServer=id) # текущий сервер
 
-    context = {
-        'serverList': serverList,
-        'countChecked': countChecked,
-        'countAll': countAll, 
-        'canalList': canalList,
-        'form': form,
-    }
-    return render(request, 'update.html', context)
+#     context = {
+#         'serverList': serverList,
+#         'countChecked': countChecked,
+#         'countAll': countAll, 
+#         'canalList': canalList,
+#         'form': form,
+#     }
+#     return render(request, 'update.html', context)
 
 
 def listM3U(request): # Список исходных плейлистов
-    serverList = listservers.objects.all()
-    #form = listServerForm()
+    serversList = ListServers.objects.all()
+    serverList=[]
+    for server in serversList:
+        countAll = Canal.objects.filter(idm3u=server.idServer).count() # Количество каналов в списке
+        countChecked = Canal.objects.filter(idm3u=server.idServer, checkedForOutput = True).count() # количество отмеченных каналов
+
+        serverList.append([server.idServer,
+                           server.nameServer,
+                           server.urlServer,
+                           countChecked,
+                           countAll
+                        ])
+
     context = {
         'serverList': serverList,
-    #   'form': form,
+    
     }
     return render(request, 'm3uList.html', context)
 
 def generateM3U(): # Генерируем файл M3U
     # Выбираем все помеченые каналы
-    canals = canal.objects.filter(checkedForOutput = True).order_by('idm3u', 'idCanal')
+    canals = Canal.objects.filter(checkedForOutput = True).order_by('idm3u', 'idCanal')
     listOut=[] # Выходной list
     # первая строка - заголовок с сылкой на EPG
     listOut.append('#EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip"')
@@ -212,7 +224,7 @@ def generateM3U(): # Генерируем файл M3U
         listOut.append(can.urlCanal) # далее ссылка на канал
     #print(listOut)
     outputstring='\n'.join(listOut) # итоговый список выводим через разделитель строк "\n" 
-    fileName = "./static/myList.m3u"
+    fileName = "myList.m3u"
     try:
         with open(fileName, 'w', encoding='utf-8') as f: # Запись в файл
             f.write(outputstring)
@@ -220,14 +232,8 @@ def generateM3U(): # Генерируем файл M3U
         fileName='Ошибка записи в файл:' + ex
     return fileName
 
-
-# class PersonListView(ListView):
-#     model = canal
-#     table_class = PersonTable
-#     template_name = 'canal.html'
-
 def playLink(request, idm3u, idCanal):
-    m3ulink = canal.objects.get(idm3u=idm3u, idCanal=idCanal).urlCanal
+    m3ulink = Canal.objects.get(idm3u=idm3u, idCanal=idCanal).urlCanal
     content = {
         'm3ulink': m3ulink,
     }

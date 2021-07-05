@@ -15,20 +15,20 @@
     <tbody>
         {% for server in serverList %}
         <tr>
-            <td scope="row">{{ server.nameServer }}</td>
+            <td scope="row">{{ server.1 }}</td>
             <td scope="row">
-                <form action="{% url 'updateM3U2' server.idServer %}" method="post">
+                <form action="{% url 'updateList' server.0 %}" method="post">
                     {% csrf_token %}
-                    <input class="btn btn-md btn-success" value="{{ server.urlServer }}" type="submit">
+                    <input class="btn btn-md btn-success" value="{{ server.2 }}" type="submit">
                 </form>
             </td>
             
             <td scope="row">
                 <!--delete-->
-                <a class="btn btn-md btn-danger" href="{% url 'delete' server.idServer %}">Delete</a>
+                <a class="btn btn-md btn-danger" href="{% url 'delete' server.0 %}">Delete</a>
             </td>
-            <td scope="row">Other</td>
-            <td scope="row">Other</td>
+            <td scope="row">{{ server.3 }}</td>
+            <td scope="row">{{ server.4 }}</td>
         </tr>
         {% endfor %}
     </tbody>

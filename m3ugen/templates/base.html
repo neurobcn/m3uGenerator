@@ -8,7 +8,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#">M3U генератор</a>
+            <a class="navbar-brand" href="">M3U генератор</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
@@ -18,13 +18,10 @@
                     <a class="nav-link active" aria-current="page" href="{% url 'home' %}">Готовый плейлист</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'uploadM3' %}">Добавить плейлист</a>
+                    <a class="nav-link active" aria-current="page" href="{% url 'uploadM3U' %}">Добавить плейлист</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link active" aria-current="page" href="{% url 'listM3U' %}">Список плейлистов</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" aria-current="page" href="{% url 'canal_list' 5 %}">Список плейлистов333</a>
                 </li>
             </div>
         </div>

@@ -1,7 +1,7 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import canal, listservers
+from .models import Canal, ListServers
 # Регистрируем на админ панели наши продукты
-admin.site.register(listservers)
-admin.site.register(canal)
+admin.site.register(ListServers)
+admin.site.register(Canal)

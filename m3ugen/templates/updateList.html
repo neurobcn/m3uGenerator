@@ -4,10 +4,6 @@
 <h3>Управление каналами</h3>
 
 <form name="Form1">
-
-
-
-
 <table class="table">
     <thead>
         <tr>
@@ -28,7 +24,9 @@
             </td>
             <td scope="row">{{ countAll }}</td>
             <td scope="row">
-                <a class="btn btn-md btn-warning" href="{% url 'reloadList' server.idServer %}" alt ='dsfsfsdf' >Обновить</a>
+                <a class="btn btn-md btn-warning" href="{% url 'reloadList' server.idServer %}">
+                    {% if countAll %}Обновить{% else %}Загрузить{% endif %}
+                </a>
             </td>
         </tr>
         {% endfor %}
