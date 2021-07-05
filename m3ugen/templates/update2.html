@@ -3,6 +3,11 @@
 {% block content %}
 <h3>Управление каналами</h3>
 
+<form name="Form1">
+
+
+
+
 <table class="table">
     <thead>
         <tr>
@@ -18,10 +23,12 @@
         <tr>
             <td scope="row">{{ server.nameServer }}</td>
             <td scope="row">{{ server.urlServer }}</td>
-            <td scope="row">{{ countChecked }}</td>
+            <td scope="row">
+                <div><span id="countChecked">{{ countChecked }}</span></div>
+            </td>
             <td scope="row">{{ countAll }}</td>
             <td scope="row">
-                <a class="btn btn-md btn-warning" href="{% url 'reloadList' server.idServer %}">Обновить</a>
+                <a class="btn btn-md btn-warning" href="{% url 'reloadList' server.idServer %}" alt ='dsfsfsdf' >Обновить</a>
             </td>
         </tr>
         {% endfor %}
@@ -58,5 +65,19 @@
         {% endfor %}
     </tbody>
 </table>
+</form>
+{% endblock %} 
 
+{% block scripting %} 
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var token = '{% csrf_token %}'.split('value="')[1].split('">')[0]
+        {% for can in canalList %}
+            $('#cbcheckedForOutput_{{ can.idCanal }}').change(function(){
+                $.post('{% url 'update_canal' can.idm3u can.idCanal %}', {'checked':this.checked, 'csrfmiddlewaretoken':token})
+                var chk = $.find('input[type=checkbox]:checked').length
+                $("#countChecked").text(chk);
+            });
+        {% endfor %}
+    </script>
 {% endblock %} 

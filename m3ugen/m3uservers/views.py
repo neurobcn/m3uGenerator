@@ -131,6 +131,14 @@ def updateM3U2(request, id): # Управление каналами
     }
     return render(request, 'update2.html', context)
 
+def updateCanal(request, idm3u, idcanal):
+    can = canal.objects.get(idm3u = idm3u, idCanal = idcanal)
+    if request.method == 'POST':
+        check_status = True if request.POST['checked'] == 'true' else False
+        can.checkedForOutput = check_status
+        can.save()
+        return HttpResponse("Success!")
+
 def updList(request, id):
     canalList = canal.objects.filter(idm3u=id)
     canalFormset = modelformset_factory(canal, fields='__all__')
