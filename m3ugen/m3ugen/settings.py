@@ -35,7 +35,6 @@ ALLOWED_HOSTS = [
   'm3ugenerator.herokuapp.com',
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'listable',
+    'django_tables2',
     'm3uservers',
     #'pages',
 ]

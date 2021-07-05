@@ -27,4 +27,7 @@ urlpatterns = [
     path('update2/<str:id>/', updateM3U2, name='updateM3U2'),
     path('delete/<str:id>/', deleteM3U, name = 'delete'),
     path('reload/<str:id>/', updateM3Udb, name = 'reloadList'),
+    path("canal/", updList, name = 'canal_list'),
+    path("playlink/<str:idm3u>/<str:idCanal>", playLink, name = 'playLink'),
+
 ]

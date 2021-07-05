@@ -31,6 +31,7 @@
 <table class="table">
     <thead>
         <tr>
+            <th scope="col">Id</th>
             <th scope="col">Output</th>
             <th scope="col">NameCanal</th>
             <th scope="col">NameGroup</th>
@@ -50,7 +51,9 @@
             </td>
             <td scope="row">{{ can.nameCanal }}</td>
             <td scope="row">{{ can.nameGroup }}</td>
-            <td scope="row">{{ can.urlCanal }}</td>
+            <td scope="row">
+                <a class="btn btn-md btn-warning" href="{% url 'playLink' can.idm3u can.idCanal %}">{{ can.urlCanal }}</a>
+            </td>
         </tr>
         {% endfor %}
     </tbody>

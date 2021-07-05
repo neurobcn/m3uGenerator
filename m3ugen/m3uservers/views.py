@@ -2,12 +2,15 @@ from django.db import models
 from django.db.models import fields
 from m3ugen.settings import STATIC_URL
 import  requests
-from m3uservers.forms import newServerForm, listServerForm, listCanalForm
+from m3uservers.forms import newServerForm, listServerForm, listCanalForm, editCanalForm
 from m3uservers.models import listservers, canal
 from django.shortcuts import redirect, render
 from django.http import HttpResponse
 from django.conf import settings
-
+from django.views.generic import ListView
+from .tables import PersonTable
+from django.forms import formset_factory
+from django.forms import modelformset_factory
 
 def downloadm3u(url): # Загрузка m3u 
     try:
@@ -56,7 +59,9 @@ def uploadM3U(request):
     return render(request, 'upload.html', context)
 
 def deleteM3U(request, id): # Удаляем сервер из списка
-    m3u = listservers.objects.get(idServer=id) 
+    m3u = listservers.objects.get(idServer=id)
+    canals = canal.objects.filter(idm3u=id)
+    canals.delete()
     m3u.delete()
     return redirect('listM3U')
 
@@ -65,14 +70,21 @@ def reloadList(request, id):
 
 def updateM3Udb(request, id): # Обновление списка каналов из сохраненного в базе contentm3u2
     server = listservers.objects.get(idServer=id) # Выбираем сервер
+    
+    url = server.urlServer # Ссылка на источник
+    m3u = downloadm3u(url) # скачиваем список каналов из источника
+    if 'Invalid URL' not in m3u: # Если ошибок нет - 
+        server.contentm3u2 = m3u # то полученный контент
+        server.save()            # сохраняем в базу
+
     content = server.contentm3u2 # Вытягиваем сохраненный content
 
     canals = content.split('#EXTINF:') # разбиваем на каналы - разделитель EXTINF
     i=1
-    canals.pop(0) # вырезаем первую строку
+    canals.pop(0) # вырезаем первую строку 
     for can in canals: # Пробегаем по списку
         items = can.splitlines() # разбиваем на элементы
-        print('stttt:', items)
+        #print('stttt:', items)
         
         title = items[0][items[0].find(',')+1:].strip() # Заголовок
         grp = ''
@@ -119,9 +131,41 @@ def updateM3U2(request, id): # Управление каналами
     }
     return render(request, 'update2.html', context)
 
+def updList(request):
+    canalList = canal.objects.filter(idm3u=4)
+    canalFormset = modelformset_factory(canal, fields='__all__')
+    if request.method == 'POST':
+        formset = canalFormset(request.POST, request.FILES)
+        print('formset:',formset.as_table)
+        if formset.is_valid():
+            # do something with the formset.cleaned_data
+            instances = formset.save(commit=False)
+            for instance in instances:
+            # do something with instance
+                print('instance:'+instance)
+                instance.save()
+    else:
+        formset = canalFormset(queryset=canal.objects.filter(idm3u=5))
+    return render(request, 'canal_list.html', {'formset': formset})
+
 def updateM3U(request, id):
 
+    #if request.method == 'POST': # Если обновляем
+
+    newform = editCanalForm(request.POST)
     #cans = canals2.objects.
+    cannals2 = canal.objects.filter(idm3u=id).order_by('idCanal')
+    form = []
+    for can2 in cannals2:
+        canalform = [can2.idm3u, 
+                     can2.idCanal,
+                     can2.nameCanal,
+                     can2.nameGroup,
+                     can2.urlCanal,
+                     can2.checkedForOutput]
+        form.append (canalform)
+
+    #form2 = editCanalForm(instance=)
 
     cannals = canal.objects.filter(idm3u=id).order_by('idCanal')
     countAll = canal.objects.filter(idm3u=id).count()
@@ -132,6 +176,7 @@ def updateM3U(request, id):
         'countChecked': countChecked,
         'countAll': countAll, 
         'list2': cannals,
+        'form': form,
     }
     return render(request, 'update.html', context)
 
@@ -167,5 +212,14 @@ def generateM3U(): # Генерируем файл M3U
     return fileName
 
 
+# class PersonListView(ListView):
+#     model = canal
+#     table_class = PersonTable
+#     template_name = 'canal.html'
 
-
+def playLink(request, idm3u, idCanal):
+    m3ulink = canal.objects.get(idm3u=idm3u, idCanal=idCanal).urlCanal
+    content = {
+        'm3ulink': m3ulink,
+    }
+    return render(request, 'playlink.html', content)

@@ -16,3 +16,9 @@ class canal(models.Model):
     nameGroup = models.CharField(max_length=1024)
     urlCanal = models.CharField(max_length=1024)
     checkedForOutput = models.BooleanField(default=True) # флаг выбора для выходного файла
+
+class groups(models.Model):
+    nameGroup = models.CharField(max_length=50)
+
+# class allCanal(canal):
+#     pass

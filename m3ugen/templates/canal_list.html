@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<form action="" method="post" class="post-form" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ formset.management_form }}
+    <p><input type="submit" value="Загрузить"></p>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Id</th>
+                <th scope="col">Output</th>
+                <th scope="col">NameCanal</th>
+                <th scope="col">NameGroup</th>
+                <th scope="col">UrlCanal</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for form in formset %}
+            <tr>
+                <td scope="row">{{ form.idCanal }}</td>
+                <td scope="row">
+                    {{ form.checkedForOutput }}
+                </td>
+                <td scope="row">{{ form.nameCanal }}</td>
+                <td scope="row">{{ form.nameGroup }}</td>
+                <td scope="row">
+                    <a class="btn btn-md btn-warning" href="{% url 'playLink' form.idm3u form.idCanal %}">{{ form.urlCanal }}</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    
+        
+            <!-- <p>{{ form.idCanal }}---{{ form.nameCanal }}-{{ form.urlCanal }}</p> -->
+        
+    </table>
+</form>
+{% endblock %}
+
