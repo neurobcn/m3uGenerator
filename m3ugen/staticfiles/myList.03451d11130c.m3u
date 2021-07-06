@@ -1,13 +1,4 @@
 #EXTM3U url-tvg="http://www.teleguide.info/download/new3/jtv.zip"
-#EXTINF:-1,Первый канал
-#EXTGRP:Федеральные
-http://195.49.206.244:90/Pervyi_kanal/index.m3u8
-#EXTINF:-1,Первый канал (Европа)
-#EXTGRP:Федеральные
-http://212.200.127.243:80/PerviyKanal/index.m3u8
-#EXTINF:-1,Россия 1 HD
-#EXTGRP:Федеральные
-http://a3569458063-s26881.cdn.ngenix.net/hls/russia_hd/playlist_4.m3u8
 #EXTINF:-1,Россия 1 (+1)
 #EXTGRP:Федеральные
 http://radio-live-mg.rtr-vesti.ru/hls/russia1_plus1/playlist_3.m3u8
@@ -1134,9 +1125,6 @@ http://live.m2.tv/hls3/720/stream.m3u8
 #EXTINF:-1,Страна FM HD
 #EXTGRP:МУЗЫКА
 http://live.stranafm.cdnvideo.ru/stranafm/stranafm_hd.sdp/playlist.m3u8
-#EXTINF:-1,2×2
-#EXTGRP:3
-http://178.124.183.150/hls/EU9VTLDQCN_HLS/bw1200000/playlist.m3u8
 #EXTINF:-1,8 канал
 http://178.124.183.150/hls/ZXUZZKCA6P_HLS/bw1200000/playlist.m3u8
 #EXTINF:-1,365 дней ТВ
@@ -1159,10 +1147,6 @@ http://178.124.183.13/hls/BHH8EKRXPO/bw1200000/playlist.m3u8
 http://178.124.183.13/hls/CH_FOX/bw1200000/playlist.m3u8
 #EXTINF:-1,FOX Life
 http://178.124.183.13/hls/CH_FOXL/bw1200000/playlist.m3u8
-#EXTINF:-1,Galaxy
-http://178.124.183.13/hls/CH_GALAXY/bw1200000/playlist.m3u8
-#EXTINF:-1,Gulli
-http://178.124.183.13/hls/7FFGONY2N8/bw1200000/playlist.m3u8
 #EXTINF:-1,History
 http://178.124.183.150/hls/CH_HISTORY_HLS/bw1200000/playlist.m3u8
 #EXTINF:-1,KVARTAL TV

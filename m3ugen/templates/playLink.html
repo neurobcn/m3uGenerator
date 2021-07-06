@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>   
+</head>
+    <script src="{% static 'playerjs.js' %}" type="text/javascript"></script>
+    <!-- <video src="{{ m3ulink }}" controls></video> -->
+<body>
+<div id="player"></div>
+
+<script>
+   var player = new Playerjs({id:"player", file:"{{ m3ulink }}"});
+</script>
+</body>
+</html>
