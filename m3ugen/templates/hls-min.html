@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>   
+    <script type="text/javascript" src="{% static 'hls-min.js' %}"></script>   
+    <script src="{% static 'video.js' %}"></script>
+    <script src="https://demo.flashphoner.com/client2/examples/demo/streaming/hls-player/videojs-hls.min.js"></script>  
+
+</head>
+ 
+<body>
+    <video id="videoPlayer" width="600" height="400"
+        src="{{ m3ulink }}"
+        controls="controls"
+        type="application/vnd.apple.mpegurl">
+    </video>
+    <button onclick="play()">Play</button>
+</body>
+</html>

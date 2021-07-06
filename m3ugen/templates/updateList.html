@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h3>Управление каналами</h3>
+
+<form name="Form1">
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Name</th>
+            <th scope="col">url</th>
+            <th scope="col">Выбрано каналов</th>
+            <th scope="col">Всего каналов</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for server in serverList %}
+        <tr>
+            <td scope="row">{{ server.nameServer }}</td>
+            <td scope="row">{{ server.urlServer }}</td>
+            <td scope="row">
+                <div><span id="countChecked">{{ countChecked }}</span></div>
+            </td>
+            <td scope="row">{{ countAll }}</td>
+            <td scope="row">
+                <a class="btn btn-md btn-warning" href="{% url 'reloadList' server.idServer %}">
+                    {% if countAll %}Обновить{% else %}Загрузить{% endif %}
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Output</th>
+            <th scope="col">NameCanal</th>
+            <th scope="col">NameGroup</th>
+            <th scope="col">UrlCanal</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for can in canalList %}
+        <tr>
+            <td scope="row">{{ can.idCanal }}</td>
+            <td scope="row">
+                {% if can.checkedForOutput %}
+                    <input type="checkbox" name="cbcheckedForOutput" id="cbcheckedForOutput_{{ can.idCanal }}" checked>
+                {% else %}
+                    <input type="checkbox" name="cbcheckedForOutput" id="cbcheckedForOutput_{{ can.idCanal }}">
+                {% endif %}
+            </td>
+            <td scope="row">{{ can.nameCanal }}</td>
+            <td scope="row">{{ can.nameGroup }}</td>
+            <td scope="row">
+                <a class="btn btn-md btn-warning" href="{% url 'playLink' can.idm3u can.idCanal %}">{{ can.urlCanal }}</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</form>
+{% endblock %} 
+
+{% block scripting %} 
+    <script src = "https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        var token = '{% csrf_token %}'.split('value="')[1].split('">')[0]
+        {% for can in canalList %}
+            $('#cbcheckedForOutput_{{ can.idCanal }}').change(function(){
+                $.post('{% url 'update_canal' can.idm3u can.idCanal %}', {'checked':this.checked, 'csrfmiddlewaretoken':token})
+                var chk = $.find('input[type=checkbox]:checked').length
+                $("#countChecked").text(chk);
+            });
+        {% endfor %}
+    </script>
+{% endblock %} 

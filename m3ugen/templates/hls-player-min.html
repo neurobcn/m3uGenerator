@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="video-js.css">
+    <script src="video.js"></script>
+    <script src="videojs-hls.min.js"></script>  
+    <script type="text/javascript" src="https://flashphoner.com/downloads/builds/flashphoner_client/wcs_api-2.0/current/flashphoner.js"></script>
+    <script type="text/javascript" src="hls-player-min.js"></script>
+</head>
+<body onload="initPage()">
+    <video id="remoteVideo" width="320" height="240" class="video-js vjs-default-skin"
+                   controls="controls"
+                   type="application/vnd.apple.mpegurl">
+    </video>
+    <button id="applyBtn" type="button">Play</button>
+</body>
+</html>
