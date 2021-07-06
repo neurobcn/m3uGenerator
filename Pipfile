@@ -17,7 +17,6 @@ sqlparse = "==0.4.1"
 urllib3 = "==1.26.6"
 Django = "==3.2.4"
 Pillow = "==8.2.0"
-django-tables2 = "*"
 
 [dev-packages]
 
