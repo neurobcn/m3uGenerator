@@ -1,1 +1,1 @@
-web: gunicorn m3ugen.wsgi
+web:gunicorn m3ugen.wsgi
