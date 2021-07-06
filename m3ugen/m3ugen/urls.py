@@ -21,10 +21,14 @@ from m3uservers.views import *
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_view, name='home'),
-    path('upload/', uploadM3U, name='uploadM3'),
+    path('upload/', uploadM3U, name='uploadM3U'),
     path('list/', listM3U, name='listM3U'),
-    path('update/<str:id>/', updateM3U, name='updateM3U'),
-    path('update2/<str:id>/', updateM3U2, name='updateM3U2'),
+    #path('update/<str:id>/', updateM3U, name='updateM3U'),
+    path('updateList/<str:id>/', updateList, name='updateList'),
+    path('update_canal/<str:idm3u>/<str:idcanal>/', updateCanal, name='update_canal'),
     path('delete/<str:id>/', deleteM3U, name = 'delete'),
-    path('reload/<str:id>/', updateM3Udb, name = 'reloadList'),
+    path('reload/<str:id>/', reloadList, name = 'reloadList'),
+    #path("canal/<str:id>/", updList, name = 'canal_list'),
+    path("playlink/<str:idm3u>/<str:idCanal>", playLink, name = 'playLink'),
+
 ]

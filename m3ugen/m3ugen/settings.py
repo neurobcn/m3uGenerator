@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,7 +35,6 @@ ALLOWED_HOSTS = [
   'm3ugenerator.herokuapp.com',
 ]
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'listable',
+    #'django_tables2',
     'm3uservers',
     #'pages',
 ]
@@ -85,23 +84,23 @@ WSGI_APPLICATION = 'm3ugen.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'dec73gj5i64nj7',
-#         'USER': 'lchgdonrxjewfq',
-#         'PASSWORD': '565bcdf4371caa18fb9430cb8e94ce7b9038dbbe6b4c4c7c22851715721df883',
-#         'HOST': 'ec2-176-34-105-15.eu-west-1.compute.amazonaws.com',
-#         'PORT': '5432',
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'dec73gj5i64nj7',
+        'USER': 'lchgdonrxjewfq',
+        'PASSWORD': '565bcdf4371caa18fb9430cb8e94ce7b9038dbbe6b4c4c7c22851715721df883',
+        'HOST': 'ec2-176-34-105-15.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
+    }
+}
 
 
 # Password validation
