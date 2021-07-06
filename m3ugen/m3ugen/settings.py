@@ -13,6 +13,14 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
+
+
+dotenv_path = os.path.join(Path(__file__).resolve().parent.parent.parent.parent.parent, '.env')
+if os.path.exists(dotenv_path):
+    from dotenv import load_dotenv
+    load_dotenv(dotenv_path)
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 #BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -22,10 +30,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-gkp7q(qtgo3^9k(+)+h#z_)rzh5y57$t#o^ttp1y!td-$xg&jv'
+SECRET_KEY = os.environ.get('Python_M3U_SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('Python_M3U_DEBUG')
 
 # ALLOWED_HOSTS = []
 
@@ -44,9 +52,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    #'django_tables2',
     'm3uservers',
-    #'pages',
 ]
 
 MIDDLEWARE = [
@@ -93,12 +99,12 @@ WSGI_APPLICATION = 'm3ugen.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'dec73gj5i64nj7',
-        'USER': 'lchgdonrxjewfq',
-        'PASSWORD': '565bcdf4371caa18fb9430cb8e94ce7b9038dbbe6b4c4c7c22851715721df883',
-        'HOST': 'ec2-176-34-105-15.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432',
+        'ENGINE':   'django.db.backends.postgresql',
+        'NAME':     os.environ.get('Python_M3U_NAME'),
+        'USER':     os.environ.get('Python_M3U_USER'),
+        'PASSWORD': os.environ.get('Python_M3U_PASSWORD'),
+        'HOST':     os.environ.get('Python_M3U_HOST'),
+        'PORT':     '5432',
     }
 }
 

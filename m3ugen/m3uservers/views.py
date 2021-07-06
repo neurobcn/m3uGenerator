@@ -109,16 +109,6 @@ def reloadList(request, id): # Обновление списка каналов 
 
 
 def updateList(request, id): # Управление каналами
-    # 
-    # form = ListCanalForm(request.POST)
-    # if request.method == 'POST': # Если обновляем
-    #     form = ListCanalForm(request.POST) # Заполняем форму
-    #     print('form:', form)
-    #     # if form.is_valid():
-    #     #     #sss = form.cleaned_data('')
-    #     #     print('form:', form)
-    #
-
     canalList = Canal.objects.filter(idm3u=id).order_by('idCanal') # список каналов
     countAll = Canal.objects.filter(idm3u=id).count() # Количество каналов в списке
     countChecked = Canal.objects.filter(idm3u=id, checkedForOutput = True).count() # количество отмеченных каналов
@@ -128,7 +118,6 @@ def updateList(request, id): # Управление каналами
         'countChecked': countChecked,
         'countAll': countAll, 
         'canalList': canalList,
-        #'form': form,
     }
     return render(request, 'updateList.html', context)
 
@@ -139,57 +128,6 @@ def updateCanal(request, idm3u, idcanal):
         can.checkedForOutput = check_status
         can.save()
         return HttpResponse("")
-
-# def updList(request, id):
-#     canalList = Canal.objects.filter(idm3u=id)
-#     canalFormset = modelformset_factory(Canal, fields='__all__')
-#     if request.method == 'POST':
-#         formset = canalFormset(request.POST, request.FILES)
-#         print('formset:',formset.as_table)
-#         if formset.is_valid():
-#             # do something with the formset.cleaned_data
-#             instances = formset.save(commit=False)
-#             for instance in instances:
-#             # do something with instance
-#                 print('instance:'+instance)
-#                 instance.save()
-#     else:
-#         formset = canalFormset(queryset = Canal.objects.filter(idm3u=id))
-#     return render(request, 'canal_list.html', {'formset': formset})
-
-# def updateM3U(request, id):
-
-#     #if request.method == 'POST': # Если обновляем
-
-#     newform = EditCanalForm(request.POST)
-#     #cans = canals2.objects.
-#     cannals2 = Canal.objects.filter(idm3u=id).order_by('idCanal')
-#     form = []
-#     for can2 in cannals2:
-#         canalform = [can2.idm3u, 
-#                      can2.idCanal,
-#                      can2.nameCanal,
-#                      can2.nameGroup,
-#                      can2.urlCanal,
-#                      can2.checkedForOutput]
-#         form.append (canalform)
-
-#     #form2 = editCanalForm(instance=)
-
-#     canalList = Canal.objects.filter(idm3u=id).order_by('idCanal') # список каналов
-#     countAll = Canal.objects.filter(idm3u=id).count() # Количество каналов в списке
-#     countChecked = Canal.objects.filter(idm3u=id, checkedForOutput = True).count() # количество отмеченных каналов
-#     serverList = ListServers.objects.filter(idServer=id) # текущий сервер
-
-#     context = {
-#         'serverList': serverList,
-#         'countChecked': countChecked,
-#         'countAll': countAll, 
-#         'canalList': canalList,
-#         'form': form,
-#     }
-#     return render(request, 'update.html', context)
-
 
 def listM3U(request): # Список исходных плейлистов
     serversList = ListServers.objects.all()
