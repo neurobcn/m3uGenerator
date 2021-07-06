@@ -162,7 +162,8 @@ def generateM3U(): # Генерируем файл M3U
         listOut.append(can.urlCanal) # далее ссылка на канал
     #print(listOut)
     outputstring='\n'.join(listOut) # итоговый список выводим через разделитель строк "\n" 
-    fileName = "myList.m3u"
+    path = str(settings.STATICFILES_DIRS[0])
+    fileName = path + "\myList.m3u"
     try:
         with open(fileName, 'w', encoding='utf-8') as f: # Запись в файл
             f.write(outputstring)
