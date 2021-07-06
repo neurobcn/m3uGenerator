@@ -63,9 +63,6 @@ def deleteM3U(request, id): # Удаляем сервер из списка
     m3u.delete()
     return redirect('listM3U')
 
-def reloadList(request, id):
-    pass
-
 def reloadList(request, id): # Обновление списка каналов из сохраненного в базе contentm3u2
     server = ListServers.objects.get(idServer=id) # Выбираем сервер
     
